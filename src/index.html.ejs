@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <title>{{= name}}</title>
+    <meta content="{{= name}}" name="description">
+    <meta content="{{= xcp_name}} Developers" name="author">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <noscript>This site requires Javascript. Please enable it, and then try loading the page again.</noscript>
+
+    <!-- build:css css/counterwallet-deps-min.css -->
+    <link rel="stylesheet" type="text/css" media="screen" href="vendors/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="vendors/font-awesome/css/font-awesome.min.css">
+    <!-- SmartAdmin Styles -->
+    <link rel="stylesheet" type="text/css" media="screen" href="vendors/smartadmin/css/smartadmin-production.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="vendors/smartadmin/css/smartadmin-skins.css">
+    <!-- Counterwallet plugin styles -->
+    <link rel="stylesheet" type="text/css" href="vendors/jReject/css/jquery.reject.css">
+    <link rel="stylesheet" type="text/css" href="vendors/keyboard/css/keyboard.css">
+    <link rel="stylesheet" type="text/css" href="vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="vendors/select2/select2.css">
+    <link rel="stylesheet" type="text/css" href="vendors/select2/select2-bootstrap.css">
+    <!-- endbuild -->
+
+    <!-- Counterwallet custom styles -->
+    <!-- build:css css/counterwallet-min.css -->
+    <link rel="stylesheet" type="text/css" media="screen" href="css/default.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/overrides.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/misc.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/components/logon.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/components/chatfeed.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/components/balances.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/components/exchange.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/components/betting.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/components/rps.css">
+    <!-- endbuild -->
+
+    <!-- FAVICONS -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="icon" href="images/favicon.ico">
+
+    <!-- GOOGLE FONT -->
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
+    
+    <!-- Specifying a Webpage Icon for Web Clip 
+         Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="images/apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="images/apple-touch-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="images/apple-touch-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="images/apple-touch-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="images/apple-touch-icon-152x152.png" />
+    
+    <!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  </head>
+  <body class="fixed-header fixed-ribbon fixed-navigation smart-style-2" data-bind="css: {minified: IS_MOBILE_OR_TABLET }">
+    <!-- default to ultra light theme (smart-style-2) -->
+    <!-- also default to minfied view on mobile/tablet devices -->
+
+    <!-- HEADER -->
+    <header id="header" style="display: none">
+      <div id="logo-group">
+        <span id="logo"><span class="logoText">Shellparty</span></span>
+        
+        <span id="notificationFeed" class="activity-parent" data-contenturl="pages/feed_notifications.html", data-bind="click: ack">
+            <span class="activity-dropdown">
+                <i class="fa fa-check"></i><b data-bind="fadeVisible: unackedCount() > 0, text: unackedCount" class="badge"></b>
+            </span>
+            <div class="ajax-dropdown">
+              <h2>Notifications</h2>
+              <div class="ajax-notifications custom-scroll"></div> <!-- notification content -->
+              <span><b>Last updated:</b> <span id="notoLastUpdated" data-bind="timeago: lastUpdated()"></span></span> <!-- footer -->
+            </div> <!-- .ajax-dropdown -->
+        </span>
+        
+        <span id="pendingActionFeed" class="activity-parent" data-contenturl="pages/feed_pending_actions.html">
+            <span class="activity-dropdown">
+                <i class="fa fa-clock-o"></i><b data-bind="visible: dispCount() > 0, text: dispCount" class="badge"></b>
+            </span>
+            <div class="ajax-dropdown">
+              <h2>Pending Actions</h2>
+              <div class="ajax-notifications custom-scroll"></div> <!-- notification content -->
+              <span><b>Last updated:</b> <span id="pendingLastUpdated" data-bind="timeago: lastUpdated()"></span></span> <!-- footer -->
+            </div> <!-- .ajax-dropdown -->
+        </span>
+
+        <span id="btcPayFeed" data-bind="fadeVisible: dispCount()" class="activity-parent" data-contenturl="pages/feed_btcpays.html">
+            <span class="activity-dropdown">
+                <i class="fa fa-btc"></i><b data-bind="text: dispCount()" class="badge badge-error"></b>
+            </span>
+            <div class="ajax-dropdown">
+              <h2>Required {{= btc}} Pays</h2>
+              <div class="ajax-notifications custom-scroll"></div> <!-- notification content -->
+              <span><b>Last updated:</b> <span id="pendingLastUpdated" data-bind="timeago: dispLastUpdated()"></span></span> <!-- footer -->
+            </div> <!-- .ajax-dropdown -->
+        </span>
+        
+      </div> <!-- logo-group -->
+
+      <span id="noticeTestnet" data-bind="visible: USE_TESTNET" >Testnet in use</span>
+
+      <div class="pull-right"> <!-- pulled right: nav area -->
+        <div id="logout" class="btn-header transparent pull-right"> <!-- logout button -->
+          <span> <a href="pages/logon.html" title="Sign Out"><i class="fa fa-sign-out"></i></a> </span>
+        </div> <!-- end logout button -->
+
+        <div id="support" class="btn-header transparent pull-right"> <!-- help button -->
+          <!-- <span> <a href="#" title="Support"><i class="fa fa-question"></i></a> </span> -->
+        </div> <!-- end help button -->
+
+        <div id="fullscreen" class="btn-header transparent pull-right"> <!-- fullscreen button -->
+            <span> <a href="#" title="Full Screen"><i class="fa fa-arrows-alt"></i></a> </span>
+        </div> <!-- end fullscreen button -->
+
+        <div id="showOptions" class="btn-header transparent pull-right"> <!-- options button -->
+            <span> <a href="#" title="Show Options"><i class="fa fa-gear"></i></a> </span>
+        </div> <!-- end options button -->
+
+        <div id="hide-menu" class="btn-header pull-right">
+          <span> <a href="#" title="Collapse Menu"><i class="fa fa-minus-square"></i></a> </span>
+        </div>
+        
+        <span id="noticeDevMode" data-bind="visible: IS_DEV" class="label label-warning pull-right modeIndicator"><i class="fa-fw fa fa-warning"></i>&nbsp;Dev Mode Enabled</span>
+       
+        <span id="donate" class="pull-right">
+          <a href="#" class="btn btn-primary">DONATE</a>
+        </span>
+
+      </div> <!-- end pulled right: nav area -->
+    </header> <!-- END HEADER -->
+
+    <!-- Left panel : Navigation area -->
+    <!-- Note: This width of the aside area can be adjusted through LESS variables -->
+    <aside id="left-panel" style="display: none">
+      <nav>
+        <!-- NOTE: Notice the gaps after each icon usage <i></i>..
+        Please note that these links work a bit different than
+        traditional href="" links. See documentation for details.
+        -->
+        <ul>
+          <li class="">
+            <a href="pages/balances.html"><i class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">My Balances</span></a>
+          </li>          
+          <li class="" data-bind="visible: FEATURE_HISTORY">
+            <a href="pages/history.html"><i class="fa fa-lg fa-fw fa-book"></i> <span class="menu-item-parent">History</span></a>
+          </li>
+          <li class="">
+            <a href="#"><i class="fa fa-lg fa-fw fa-plus"></i> <span class="menu-item-parent">More</span></a>
+            <ul>
+                <li data-bind="visible: FEATURE_PORTFOLIO">
+                    <a href="pages/portfolio.html"><i class="fa fa-lg fa-fw fa-tasks"></i> My Portfolio</a>
+                </li>
+                <li data-bind="visible: FEATURE_LEADERBOARD">
+                    <a href="pages/leaderboard.html"><i class="fa fa-lg fa-fw fa-trophy"></i> Top Assets</a>
+                </li>
+                <li data-bind="visible: FEATURE_STATS">
+                    <a href="pages/stats.html"><i class="fa fa-lg fa-fw fa-crosshairs"></i> Network Stats</a>
+                </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <span class="minifyme"> <i class="fa fa-arrow-circle-left hit"></i> </span>
+    </aside>
+    <!-- END NAVIGATION -->
+
+    <!-- MAIN PANEL -->
+    <div id="main" role="main" style="display: none">
+
+      <!-- RIBBON -->
+      <div id="ribbon" style="display: none">
+      </div> <!-- END RIBBON -->
+
+      <!-- MAIN CONTENT -->
+      <div id="content"></div>
+      <!-- END MAIN CONTENT -->
+    </div>
+    <!-- END MAIN PANEL -->
+    <div class="openChatPane">CHAT</div>
+    <div id="chatPane" style="display: none">
+      <h2 data-bind="html: headerText"></h2>
+      <div class="chatOnlineCount"><span data-bind="text: numUsersOnline"></span> Users Online</div>
+      <div id="chatContentDiv">
+        <div id="chatContentInnerDiv" data-bind="foreach: lines">
+          <p class="chatMessage"><span data-bind="html: lineHead"></span><span data-bind="text: text"></span></p>
+        </div>
+      </div>
+      <div id="chatControlDiv" class="row">
+        <div class="input-group">
+          <span class="input-group-btn">
+            <button id="chatSendButton" data-bind="click: sendLine" class="btn btn-default" type="button">Send</button>
+          </span>
+          <input id="chatTextBox" data-bind="event: { keyup: onKeyUp }" type="text" class="form-control">
+        </div><!-- /input-group -->
+      </div><!-- /.row -->        
+    </div>    
+
+    <!-- Logged out cover div -->
+    <div id="logon" class="shellparty">
+      <img src="images/shellparty@2x.png" alt="Shellparty" class="dp-logo" />
+      <h1>Welcome to {{= name}}<span data-bind="visible: USE_TESTNET">&nbsp;Testnet</span></h1>
+      <h2>Powered by Counterparty</h2>
+      <div id="form-well" class="form-well">
+        <div id="createNewAcctBtnPane" data-bind="visible: generatedPassphrase().length == 0">
+          <button id="newWalletButton" data-bind="click: generatePassphrase" type="button" class="btn btn-lg">Create New Wallet</button>
+        </div>
+        <div id="newAccountInfoPane" data-bind="fadeVisible: generatedPassphrase().length > 0" class="display-none">
+          <br/>
+          <div class="panel panel-warning">
+            <div class="panel-heading">
+              <h3 class="panel-title"><b class="panel-headline">To use {{= name}} you need <span class="nowrap">a twelve word passphrase.</span></b></h3>
+            </div>
+            <div class="panel-body">
+              <p>We have created a passphrase for you in the box below.</p>
+              <div class="margin-bottom-10">
+                <div id="generated" data-bind="text: generatedPassphrase"></div>
+                <button id="generated-regenerate" data-bind="click: generatePassphrase, tooltip: {title: 'Click to generate another random passphrase.'}" class="btn btn-default btn-regenerate" type="button"><i class="fa fa-repeat"></i></button>
+              </div>
+              <div class="alert alert-danger" class="margin-top-10">
+                <p class="logonWarningLine1">Write your passphrase down and keep it safe.</p>
+                <p class="logonWarningOtherLines">
+                  If you lose this passphrase, you will lose access to your wallet <i>forever</i>.
+                </p>
+                <p class="logonWarningOtherLines">
+                  If someone gets your passphrase, they gain access to your wallet.
+                </p>
+              </div>
+              <p>To log into your wallet, input your passphase in the wallet login textbox below, and press the <b>Open Wallet</b> button.</p>
+            </div>
+          </div>
+        </div>
+
+        <div data-bind="visible: !USE_TESTNET" class="testnet-note">
+          <p>
+            <span>New to {{= name}}, <span class="nowrap">and want to just play around?</span></span>
+            <br />
+            <b><a href="{{= testnet.url}}" target="_blank">Try {{= name}} Testnet!</a></b>
+           </p>
+         </div>
+
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">
+              <b class="panel-headline">Log Into Your <span data-bind="visible: USE_TESTNET">Testnet&nbsp;</span>Wallet</b>
+            </h3>
+          </div>
+          <div class="panel-body" class="padding-left-5 padding-right-5">
+            <form class="form-inline" role="form" id="loginform">
+              <div class="row">
+                <div class="col-sm-12" data-bind="visible: !cryptedPassphraseUsed()">
+                  <input id="password" data-bind="value: enteredPassphrase, valueUpdate: 'input'" placeholder="Enter your 12 words passphrase." class="form-control" type="password" name="password">
+                </div>
+                <div class="col-sm-12" data-bind="visible: cryptedPassphraseUsed">
+                  <input id="passwordDecrypt" data-bind="value: passwordDecrypt, valueUpdate: 'input'" placeholder="Enter the password to decrypt the passphrase." class="form-control" type="password" name="passwordDecrypt">
+                </div>
+                <div class="col-sm-12">
+                  <button id="walletLoginButton" data-bind="click: openWallet, enable: isPassphraseValid(), css: { 'btn-primary-2': isPassphraseValid() }" type="button" class="btn btn-default btn-open" disabled>Open Wallet</button>
+                </div>
+              </div>
+            </form>
+            <div class="clearfix"></div>
+            <div data-bind="fadeVisible: walletGenProgressVal() > 0" class="progress progress-striped active margin-top-15 margin-bottom-0" class="margin-top-15 margin-bottom-0 display-none">
+              <div id="loginProgressBar" class="progress-bar"  role="progressbar" data-bind="style: { width: walletGenProgressWidth() }">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- form-well -->
+      
+      <div class="extra-info-box">
+         <div id="extra-info" class="container extra-info" data-bind="visible: generatedPassphrase().length === 0">
+           <div class="row down-arrow-row">
+             <div class="col-xs-12">
+              <div class="down-arrow-circle">
+                <img src="images/down-arrow@2x.png" alt="" class="down-arrow" />
+              </div>
+             </div>
+           </div>
+           <div class="row">
+             <div class="col-sm-8 col-sm-offset-2">
+               <img src="images/rocket@2x.png" alt="To the moon" class="img-rocket" />
+               <h3 class="sales-title margin-bottom-10">
+                 {{= name}} is a web-wallet for <a href="{{= homepage}}" target="_blank">{{= xcp_name}}</a>,
+                 the world’s first protocol for decentralized financial tools.
+                 All transactions made with {{= name}} use an automatic escrow system to keep them secure, with no middleman required.
+               </h3>
+             </div>
+           </div>
+          <div class="row about-wallet">
+            <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+              <div class="row">
+                <div class="col-sm-4 text-center">
+                  <img src="images/keys@2x.png" alt="Secure" class="img-secure" />
+                </div>
+                <div class="col-sm-8">
+                  <h4 class="margin-bottom-10">Secure</h4>
+                  <p>All encryption is handled client-side. Neither your passphrase nor any of your private information ever leaves your browser.</p>
+                  <p>{{= name}} passphrases are highly secure, so you know that your wallet is safe from all brute
+                     force attacks. They are also easy to learn and hard to mistype.</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4 text-center visible-xs">
+                  <img src="images/hand@2x.png" alt="Simplicity" class="img-hand" />
+                </div>
+                <div class="col-sm-8">
+                  <h4 class="margin-bottom-10">Simple</h4>
+                  <p>With {{= name}}, your passphrase is your wallet, and all of your addresses and keys are generated on-the-fly when you log in.</p>
+                  <p>There are no wallet files to backup or keep private, and with your passphrase you can access your wallet from any trusted machine with a web browser.</p> 
+                </div>
+                <div class="col-sm-4 text-center hidden-xs">
+                  <img src="images/hand@2x.png" alt="Simplicity" class="img-hand" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4 text-center">
+                  <img src="images/globe@2x.png" alt="Open-Source" class="img-globe" />
+                </div>
+                <div class="col-sm-8">
+                  <h4 class="margin-bottom-10">Open-Source</h4>
+                  <p>{{= name}} and {{= name}}d are entirely open-source, so you know that they work exactly the way that they are supposed to.</p>
+                  <p>If you like, you may also even run your own {{= name}} server.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- END logged out cover div -->
+    
+    <!-- modal for keyboardless passphrase entry (on login page) -->
+    <div data-bind="showModal: shown" id="licenseModal" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="licenseModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-bind="click: hide" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">License Agreement</h4>
+          </div>
+          <div class="modal-body no-padding">
+            <p class="formPadded">You must read and accept the following agreement in order to use this site:</p>
+            <form class="smart-form"><fieldset>
+              <section><div class="row">
+                  <textarea id="licenseAgreementText" class="form-control" rows="10" readonly="readonly"></textarea>
+              </div></section>
+            </fieldset></form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bind="click: hide">Reject Terms</button>
+            <button type="button" data-bind="click: acceptTerms" class="btn btn-success">Accept Terms</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- modal for keyboardless passphrase entry (on login page) -->
+    <div data-bind="showModal: shown" id="logonPassphaseModal" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="logonPassphaseModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-bind="click: hide" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Secure Passphrase Entry</h4>
+          </div>
+          <div class="modal-body no-padding">
+            <p class="formPadded">Each text box below corresponds to a word in your 12-word passphrase. To enter your
+                passphrase, click on each box and use the on-screen keyboard that appears, then press the Login button
+                when done. This approach limits the ability that malware and keyloggers have of stealing your passphrase.</p>
+            <form class="smart-form" data-bind="submit: doAction"><fieldset>
+              <section><div class="row">
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart01" class="form-control input" type="text" placeholder="Word 1" data-bind="value: pwPart01" autocomplete="on" />
+                </div>
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart02" class="form-control input" type="text" placeholder="Word 2" data-bind="value: pwPart02"/>
+                </div>
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart03" class="form-control input" type="text" placeholder="Word 3" data-bind="value: pwPart03"/>
+                </div>
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart04" class="form-control input" type="text" placeholder="Word 4" data-bind="value: pwPart04"/>
+                </div>
+              </div></section>
+              <section><div class="row">
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart05" class="form-control input" type="text" placeholder="Word 5" data-bind="value: pwPart05"/>
+                </div>
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart06" class="form-control input" type="text" placeholder="Word 6" data-bind="value: pwPart06"/>
+                </div>
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart07" class="form-control input" type="text" placeholder="Word 7" data-bind="value: pwPart07"/>
+                </div>
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart08" class="form-control input" type="text" placeholder="Word 8" data-bind="value: pwPart08"/>
+                </div>
+              </div></section>
+              <section><div class="row">
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart09" class="form-control input" type="text" placeholder="Word 9" data-bind="value: pwPart09"/>
+                </div>
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart10" class="form-control input" type="text" placeholder="Word 10" data-bind="value: pwPart10"/>
+                </div>
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart11" class="form-control input" type="text" placeholder="Word 11" data-bind="value: pwPart11"/>
+                </div>
+                <div class="col col-3">
+                    <input id="loginPassphrasePWPart12" class="form-control input" type="text" placeholder="Word 12" data-bind="value: pwPart12"/>
+                </div>
+              </div></section>
+            </fieldset></form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bind="click: hide">Cancel</button>
+            <button type="button" data-bind="click: submitForm" class="btn btn-primary">Login</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
+    <!-- modal for setting chat handle window (in logged in interface) -->
+    <div data-bind="showModal: shown" id="chatSetHandleModal" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="chatSetHandleModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-bind="click: hide" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Choose Your Handle</h4>
+          </div>
+          <div class="modal-body no-padding">
+            <div class="formPadded">
+                To use chat, you must have a handle (or nickname) you wish to use (alphanumeric/underscore/hyphen, between 4 and 12 characters).<br/><br/>
+                <b class="txt-color-red">Please remember that people in chat may not always be who they seem. Until a verified
+                identity system is implemented for chat, do not simply trust someone is who their handle says they are!</b>                
+            </div>
+
+            <form class="smart-form" data-bind="submit: doAction"><fieldset>
+              <section><div class="row">
+                <label class="control-label col col-sm-2">Your Handle</label>
+                <div class="col col-sm-10">
+                    <label class="input"><i class="icon-append fa fa-info"></i>
+                        <input name="newHandle" data-bind="value: newHandle, valueUpdate: 'input'" type="text"/>
+                    </label>
+                </div>
+              </div></section>
+            </fieldset></form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bind="click: hide">Cancel</button>
+            <button id="startChatBtn" type="button" data-bind="click: submitForm, enable: startEnable" class="btn btn-primary">Start Chat</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
+    <!-- modal for options window (in logged in interface) -->
+    <div data-bind="showModal: shown" id="walletOptionsModal" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="walletOptionsModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-bind="click: hide" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Wallet Options <b class="pull-right padding-right-10">v<span data-bind="text: VERSION"></span></b></h4>
+          </div>
+          <div class="modal-body">
+            
+            <form class="smart-form"><fieldset>
+              <section><div class="row">
+                <label class="control-label col col-sm-2">Theme</label>
+                <div class="col col-sm-10">
+                    <select id="themeSelector" class="width-max" data-bind="options: availableThemes, value: selectedTheme, optionsValue: 'id', optionsText: 'name', select2: {  minimumResultsForSearch: -1, escapeMarkup: 'direct' }"></select>
+                </div>
+              </div></section>
+
+              <section><div class="row">
+                <label class="control-label col col-sm-2">Language</label>
+                <div class="col col-sm-10">
+                    <select id="langSelector" class="width-max" data-bind="options: availableLangs, value: selectedLang, optionsValue: 'id', optionsText: 'name', select2: {  minimumResultsForSearch: -1, escapeMarkup: 'direct' }"></select>
+                </div>
+              </div></section>
+
+              <section><div class="row">
+                <label class="control-label col col-sm-2">Wallet URL</label>
+                <div class="col col-sm-10">
+                    <input id="urlPassword" data-bind="value: urlPassword, valueUpdate: 'input'" placeholder="Enter the password to encrypt the passphrase." class="form-control" type="password" name="urlPassword" autocomplete="off">
+                    <textarea id="walletUrl" class="form-control input-lg" rows="4" style="margin-top:5px;font-size:12px" data-bind="value: walletUrl"></textarea>
+                    
+                </div>
+              </div></section>
+
+
+              <section data-bind="visible: showAdvancedOptions"><div class="row">
+                <div class="col col-sm-2">Auto {{= btc}}Pay</div>
+                <div class="col col-sm-10">
+                  <label class="checkbox">
+                    <input name="autoBTCPayEnabled" type="checkbox" data-bind="checked: autoBTCPayEnabled">
+                    <i></i>Enable Automatic {{= btc}} Payments
+                  </label>
+                  <div class="note">If this option is enabled, {{= name}} will automatically take care of making {{= btc}}
+                      payments for matched orders where you owe {{= btc}}. <b>It is highly recommended you keep this on.</b> If not
+                      enabled, you must manually settle any required {{= btc}} payments within a 10 block limit (approximately 80-100 minutes).</div>
+              </div></section>
+
+              <section data-bind="visible: showAdvancedOptions"><div class="row">
+                <div class="col col-sm-12">
+                  <div class="note txt-color-red">
+                      Don't change followings parameters, unless you know exactly what you are doing.<br />
+                      If you change them, your {{= btc}} orders could not match.<br />
+                      These parameters are not persistent.
+                  </div>
+                </div>
+              </section>
+
+              <section data-bind="visible: showAdvancedOptions"><div class="row">
+                <div class="col col-sm-3">Defaut fee provided</div>
+                <div class="col col-sm-3">
+                  <label class="input">
+                    <input class="prefFieldPercent" name="defaultBTCFeeProvidedPct" type="text" data-bind="value: defaultBTCFeeProvidedPct">%
+                  </label>
+                </div>
+                <div class="col col-sm-3">Defaut fee required</div>
+                <div class="col col-sm-3">
+                  <label class="input">
+                    <input class="prefFieldPercent" name="defaultBTCFeeRequiredPct" type="text" data-bind="value: defaultBTCFeeRequiredPct">%
+                  </label>
+                </div>
+              </div></section>
+
+              <section data-bind="visible: showAdvancedOptions"><div class="row">
+                <div class="col col-sm-3">Orders min. fee provided filter</div>
+                <div class="col col-sm-3">
+                  <label class="input">
+                    <input class="prefFieldPercent" name="minBTCFeeProvidedPct" type="text" data-bind="value: minBTCFeeProvidedPct">%
+                  </label>
+                </div>
+                <div class="col col-sm-3">Orders max. fee required filter</div>
+                <div class="col col-sm-3">
+                  <label class="input">
+                    <input class="prefFieldPercent" name="maxBTCFeeRequiredPct" type="text" data-bind="value: maxBTCFeeRequiredPct">%
+                  </label>
+                </div>
+              </div></section>
+
+              <section data-bind="visible: showAdvancedOptions"><div class="row">
+                <div class="col col-sm-2">Reset State</div>
+                <div class="col col-sm-10">
+                    <button id="refresh" type="button" data-title="refresh" href="#" class="btn btn-danger padding-5">Reset Widget State</button>
+                    <div class="note">Click this button to reset custom color settings, widget positioning, etc.</div>
+              </div></section>
+
+              <section data-bind="visible: !infoTableShown() && showAdvancedOptions()"><div class="row">
+                <div class="col col-sm-2">Show Info</div>
+                <div class="col col-sm-10">
+                    <button type="button" data-bind="click: showInfoTable" class="btn btn-default padding-5">Show Debugging Info</button>
+                    <div class="note">Click to show some useful information for troubleshooting wallet issues.</div>
+                </div>
+                
+              </div></section>
+              <section data-bind="fadeVisibleInOnly: infoTableShown && showAdvancedOptions()"><div class="row">
+                <div class="col col-sm-12">
+                    <table class="table table-striped table-hover table-border-spacing-0 table-border-collapse"><tbody>
+                        <tr>
+                            <td>Blk/MsgID</td><td><span data-bind="text: WALLET.networkBlockHeight()"></span> / <span data-bind="text: MESSAGE_FEED.lastMessageIndexReceived()"></span></td>
+                        </tr>
+                        <tr>
+                            <td>TestNet/IsDev</td><td><span data-bind="text: USE_TESTNET"></span> / <span data-bind="text: IS_DEV"></span></td>
+                        </tr>
+                        <tr>
+                            <td>WalletID</td><td><span data-bind="text: WALLET.identifier()"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Origin/MyIP/C</td><td><span data-bind="text: window.location.origin"></span> / <span data-bind="text: myIPAddr"></span> / <span data-bind="text: dispMyCookiePresent"></span></td>
+                        </tr>
+                        <tr>
+                            <td>MultiAPI List (FailIDX)</td><td><span data-bind="text: dispCWURLS"></span> <b>(<span data-bind="text: MESSAGE_FEED.failoverCurrentIndex()"></span>)</b></td>
+                        </tr>
+                        <tr>
+                            <td>Eng/Res</td><td><span data-bind="text: $.layout.className"></span> / <span data-bind="text: screen.width"></span>x<span data-bind="text: screen.height"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Browser UA</td><td><span data-bind="text: navigator.userAgent"></span></td>
+                        </tr>
+                    </tbody></table>
+              </div></section>
+            </fieldset></form>
+          </div>
+          <div class="modal-footer">
+            <div style="float:left">
+              <input type="checkbox" name="showAdvancedOptions" value="1" data-bind="checked: showAdvancedOptions">
+              <label>Advanced Options</label>             
+            </div>
+            <button type="button" class="btn btn-primary" data-bind="click: hide">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
+    <!-- modal for support window (in logged in interface) -->
+    <div data-bind="showModal: shown" id="supportModal" class="modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="supportModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-bind="click: hide" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" data-bind="visible: type == 'general'">Having Issues?</h4>
+            <h4 class="modal-title" data-bind="visible: type != 'general'">Common Questions for this Page</h4>
+          </div>
+          <div class="modal-body padding-top-0 padding-bottom-0">
+            <div data-bind="visible: type == 'general'">
+                <h5>If you are having issues using {{= name}}, please try the following:</h5>
+                <ul>
+                    <li><b>Ask in {{= name}} chat:</b> Click on the <b>Show Chat</b> link on the left menubar, and ask your question there. Someone may know the answer.</li>
+                    <li><b>Check out our forums:</b> You can post your question or issue in <a href="https://forums.counterparty.co/index.php/board,13.0.html" target="_blank">the Counterparty support forums</a>.</li>
+                    <li><b>Open a support ticket:</b> If all else fails, you may <a href="#" class="showCreateSupportCase">open a support ticket</a>.</li>
+                </ul>
+            </div>
+            <div data-bind="visible: type == 'balancesPage'">
+                <h5>Answers to common questions. Just click the one you're interested in:</h5>
+                <ul>
+                    <li><a href="https://www.counterparty.co/?p=2270" target="_blank">I logged in and my address is different, and I have no balance! Help!</a></li>
+                    <li><a href="https://www.counterparty.co/?p=2252" target="_blank">I sent funds to a crowdsale vending machine, why didn’t they show up?</a></li>
+                    <li><a href="https://www.counterparty.co/?p=2250" target="_blank">I sent {{= btc}} to Counterwallet, why doesn't it show up?</a></li>
+                    <br/>
+                    <li><a href="https://www.counterparty.co/?p=2265" target="_blank">Why do I need small amounts of {{= btc_name}} to do things in Counterwallet?</a></li>
+                    <li><a href="https://www.counterparty.co/?p=2249" target="_blank">An address I added in Counterwallet is not showing -- why?</a></li>
+                    <li><a href="https://www.counterparty.co/?p=2100" target="_blank">Does Counterwallet support two-factor authentication?</a></li>
+                    {{ if (xcp_store_url) { }}
+                    <li><a href="{{= xcp_store_url}}" target="_blank">Where can I buy {{= xcp}}?</a></li>
+                    {{ } }}
+                    <li><a href="https://www.counterparty.co/?p=2251" target="_blank">I have another issue...</a></li>
+                </ul>
+                <h5 class="margin-bottom-0">For other questions, please ask in <a href="https://forums.counterparty.co/index.php/board,13.0.html" target="_blank">the Counterparty support forums</a>.</h5> 
+                <h5>For bugs, you may <a href="#" class="showCreateSupportCase">open a support ticket</a>.</h5>
+            </div>
+            <div data-bind="visible: type == 'exchangePage'">
+                <h5>Answers to common questions. Just click the one you're interested in:</h5>
+                <ul>
+                    <li><a href="https://www.counterparty.co/?p=2075" target="_blank">What does something like “{{= xcp}}/{{= btc}}” mean, in Counterwallet?</a></li>
+                    {{ if (xcp_store_url) { }}
+                    <li><a href="{{= xcp_store_url}}" target="_blank">Where can I buy {{= xcp}}?</a></li>
+                    {{ } }}
+                    <li><a href="https://www.counterparty.co/?p=2266" target="_blank">I placed an order to buy {{= btc}} for something else. What I offered was removed from my account, but I don't see the {{= btc}} yet!</a></li>
+                    <li><a href="https://www.counterparty.co/?p=2265" target="_blank">Why does it cost me a little {{= btc_name}} to cancel an order!?</a></li>
+                    <li><a href="https://www.counterparty.co/?p=2251" target="_blank">I have another issue...</a></li>
+                </ul>
+                <h5 class="margin-bottom-0">For other questions, please ask in <a href="https://forums.counterparty.co/index.php/board,13.0.html" target="_blank">the Counterparty support forums</a>.</h5> 
+                <h5>For bugs, you may <a href="#" class="showCreateSupportCase">open a support ticket</a>.</h5>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bind="click: hide">Okay</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- modal for donation -->
+    <div data-bind="showModal: shown, validationOptions: { insertMessages: false }" id="donateModal" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="donateModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-bind="click: hide" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Make a donation</h4>
+          </div>
+          <div class="modal-body no-padding">
+            <p class="formPadded">
+              <b>Send a donation to support {{= xcp_name}} and {{= name}} development.</b><br />
+              {{= xcp_name}} is non-profit, self-funded, open source and community supported.
+              We appreciate any donations, and all donations go directly towards supporting future development.
+            </p>
+            
+            <form class="smart-form"><fieldset>
+
+              <section><div class="row">
+                <label class="control-label col col-sm-2">Send with:</label>
+                <div class="col col-sm-10">
+                  <select class="form-control" style="width: 350px;vertical-align: top;margin-right: 12px;" name="source" data-bind="options: availableAddresses, optionsValue: 'address', optionsText: 'label', value: sourceAddress, select2: { minimumResultsForSearch: 10, escapeMarkup: 'direct' }"></select>
+                </div>
+              </div></section>
+
+              <section><div class="row">
+                <label class="control-label col col-sm-2">Send Amount</label>
+                <div class="col col-sm-6">
+                    <label class="input inline-block">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-arrow-circle-o-up fa-lg fa-fw"></i></span>
+                        <input name="quantity" class="form-control input-lg" data-bind="value: quantity, valueUpdate: 'input', attr: {placeholder: 'Enter quantity'}" type="text"/>
+                      </div>
+                    </label>
+                    <span class="invalid" data-bind="validationMessage: quantity"></span>
+                </div>
+                <div class="col col-sm-4">
+                  <div class="btn-group" data-toggle="buttons">
+                    <label class="radioBtn btn btn-lg" data-bind="css: { 'btn-success': donationCurrency() == '{{= btc}}' }">
+                      <input type="radio" name="donationCurrency" value="{{= btc}}" data-bind="btnGroupChecked: donationCurrency">{{= btc}}
+                    </label>
+                    <label class="radioBtn btn btn-lg" data-bind="css: { 'btn-success': donationCurrency() == '{{= xcp}}' }">
+                      <input type="radio" name="donationCurrency" value="{{= xcp}}" data-bind="btnGroupChecked: donationCurrency">{{= xcp}}
+                    </label>
+                  </div>
+                </div>
+              </div></section>
+              <p class="formPaddedBot" data-bind="fadeVisibleInOnly: quantity">
+                You are choosing to send 
+                <b>
+                  <span class="sellColor" data-bind="text: quantity"></span>
+                  <span class="sellColor" data-bind="text: donationCurrency"></span> 
+                </b>
+                to support {{= xcp_name}} development.
+              </p>
+            </fieldset></form>
+            <p class="formPaddedBot">
+                
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bind="click: hide">Cancel</button>
+            <button type="button" class="btn btn-primary" data-bind="click: submitDonation">Send</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
+    <!-- modal for opening a support case -->
+    <div data-bind="showModal: shown" id="createSupportCaseModal" class="modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="createSupportCaseModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-bind="click: hide" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Create Support Case</h4>
+          </div>
+          <div class="modal-body no-padding">
+            <div class="formPadded">
+                <p>Create a support case by filling out the information below.</p>
+                <p class="bg-warning padding-10 margin-bottom-0"><b>Please only create a case for bugs only.<br/>For questions, check out
+                    <a href="http://support.counterparty.co/" target="_blank">our knowledge base</a> or ask in
+                    <a href="https://forums.counterparty.co/index.php/board,13.0.html" target="_blank">our forums</a>.</b></p>
+            </div>
+            
+            <form class="smart-form" data-bind="submit: doAction"><fieldset>
+              <section><div class="row">
+                <label class="control-label col col-sm-2">Your Name</label>
+                <div class="col col-sm-10">
+                    <label class="input"><i class="icon-append fa fa-user"></i>
+                        <input name="name" data-bind="value: name" type="text"/>
+                    </label>
+                </div>
+              </div></section>
+
+              <section><div class="row">
+                <label class="control-label col col-sm-2">Your Email Address</label>
+                <div class="col col-sm-10">
+                    <label class="input"><i class="icon-append fa fa-envelope"></i>
+                        <input name="email" data-bind="value: email" type="text"/>
+                    </label>
+                    <div class="note">Required so that we can provide a response to you.</div>
+                </div>
+              </div></section>
+                
+              <section><div class="row">
+                <label class="control-label col col-sm-2">Problem Description</label>
+                <div class="col col-sm-10">
+                    <label class="textarea">
+                        <textarea rows="3" class="custom-scroll" data-bind="value: problem, valueUpdate : 'input'"></textarea>
+                    </label>
+                    <div class="note">Enter an in-depth description of your problem<span data-bind="html: dispCharactersRemaining"></span>.</div>
+                </div>
+              </div></section>
+              
+              <section><div class="row">
+                <div class="col col-sm-2"></div>
+                <div class="col col-sm-10">
+                  <label class="checkbox">
+                    <input name="includeScreenshot" type="checkbox" data-bind="checked: includeScreenshot">
+                    <i></i>Include screenshot
+                  </label>
+                  <div class="note">Check this box to include a screenshot, which helps us better diagnose the issue.</div>
+              </div></section>
+              
+            </fieldset></form>
+            <div class="formPaddedBot">We will try to get back to you within <b>24 hours</b>, via email, to the address you have provided.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-bind="click: hide">Cancel</button>
+            <button type="button" data-bind="click: submitForm" class="btn btn-info">Create Case</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- build:js js/counterwallet-deps-min.js -->
+    <script src="vendors/underscore/underscore.js"></script>
+    <script src="vendors/underscore.string/lib/underscore.string.js"></script>
+    <script src="vendors/jquery/jquery.min.js"></script><!-- Jquery -->
+    <script src="vendors/jquery-ui/ui/minified/jquery.ui.core.min.js"></script>
+    <script src="vendors/jquery-ui/ui/minified/jquery.ui.widget.min.js"></script>
+    <script src="vendors/jquery-ui/ui/minified/jquery.ui.mouse.min.js"></script>
+    <script src="vendors/jquery-ui/ui/minified/jquery.ui.position.min.js"></script>
+    <script src="vendors/jquery-ui/ui/minified/jquery.ui.sortable.min.js"></script>
+    <script src="vendors/jquery-ui/ui/minified/jquery.ui.effect.min.js"></script>
+    <script src="vendors/jquery-ui/ui/minified/jquery.ui.effect-slide.min.js"></script>
+    <script src="vendors/jquery-ui/ui/minified/jquery.ui.tooltip.min.js"></script>
+    <script src="vendors/jquery-ui/ui/minified/jquery.ui.menu.min.js"></script>
+    <script src="vendors/jquery-ui/ui/minified/jquery.ui.autocomplete.min.js"></script>
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script> <!-- BOOTSTRAP JS -->
+    
+    <!-- SmartAdmin JS includes -->
+    <script src="vendors/smartadmin/js/smartwidgets/jarvis.widget.min.js"></script> <!-- JARVIS WIDGETS -->
+    <script src="vendors/smartadmin/js/plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script> <!-- bootstrap wizard -->
+    <script src="vendors/smartadmin/js/notification/SmartNotification.min.js"></script> <!-- smartadmin noto boxes -->
+
+    <!-- datatables -->
+    <script src="vendors/smartadmin/js/plugin/datatables/jquery.dataTables-cust.min.js"></script>
+    <script src="vendors/smartadmin/js/plugin/datatables/ColReorder.min.js"></script>
+    <script src="vendors/smartadmin/js/plugin/datatables/FixedColumns.min.js"></script>
+    <script src="vendors/smartadmin/js/plugin/datatables/ColVis.min.js"></script>
+    <script src="vendors/smartadmin/js/plugin/datatables/ZeroClipboard.js"></script>
+    <script src="vendors/smartadmin/js/plugin/datatables/media/js/TableTools.min.js"></script>
+    <script src="vendors/smartadmin/js/plugin/datatables/DT_bootstrap.js"></script>   
+
+    <!-- JQuery extras -->
+    <!--<script src="vendors/jReject/js/jquery.reject.js"></script>-->
+    <script src="vendors/jReject-ie11/index.js"></script>
+    <script src="vendors/jquery-yql/index.js"></script> <!-- YQL queries for calls that don't support CORS -->
+    <script src="vendors/jquery-timeago/jquery.timeago.js"></script>
+    <script src="vendors/jquery.slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="vendors/keyboard/js/jquery.keyboard.min.js"></script>
+    <script src="vendors/keyboard/js/jquery.keyboard.extension-autocomplete.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="vendors/bootbox/bootbox.js"></script>
+    <script src="vendors/moment/min/moment-with-langs.min.js"></script> <!-- time processing for datetimepicker -->
+    <script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="vendors/typeahead.js/dist/typeahead.bundle.min.js"></script>
+    
+    <!-- knockout.js -->
+    <script src="vendors/knockoutjs/index.js"></script>
+    <script src='vendors/knockout-secure-binding/dist/knockout-secure-binding.js'></script>
+    <!--<script src='vendors/knockout-secure-binding/dist/knockout-secure-binding.min.js'></script>-->
+    <script src="vendors/knockout-bootstrap/build/knockout-bootstrap.min.js"></script>
+    <script src="vendors/knockout-validation/Dist/knockout.validation.min.js"></script>
+
+    <!-- highstock (which also includes highcharts) (minified)-->
+    <script src="vendors/highstock/highstock.src.js"></script>
+    <script src="vendors/technical-indicators/index.js"></script>
+
+    <!-- Other external libraries. -->
+    <script src="js/qrcode.js"></script>  <!-- from http://d-project.googlecode.com/svn/trunk/misc/qrcode/js/ -->
+    <script src="vendors/jsdecimal/lib/decimal.js"></script> <!-- for accurate arithmetic price operations -->
+    <script src="vendors/select2/select2.min.js"></script> <!-- JQUERY SELECT2 INPUT -->
+
+    <!-- socket.io -->
+    <script src="vendors/socket.io-client/index.js"></script>
+    <script src="vendors/jqlog/jquery.jqlog-1.3.min.js"></script>
+
+    <!-- cryptojs -->
+    <script src="vendors/cryptojs/components/core-min.js"></script>
+    <script src="vendors/cryptojs/components/sha256-min.js"></script>
+    <script src="vendors/cryptojs/components/enc-base64-min.js"></script>
+    <script src="vendors/cryptojs/components/enc-utf16-min.js"></script> 
+    <script src="vendors/cryptojs/rollups/hmac-sha512.js"></script>
+    <script src="vendors/cryptojs/rollups/aes.js"></script>
+
+    <!-- bitcore -->
+    <script src="vendors/bitcore/browser/bundle.js"></script>
+
+    <!-- others -->
+    <script src="vendors/iso8601-js-period/iso8601.min.js"></script>
+    <script src="vendors/queue/queue.min.js"></script>
+    <script src="vendors/htmlcanvas/build/html2canvas.js"></script>
+    <script src="vendors/bluebird/js/browser/bluebird.js"></script>
+
+    <!-- endbuild -->
+
+
+
+    <!-- COUNTERWALLET JS INCLUDES -->
+    <!-- build:js js/counterwallet-min.js --> 
+    <script src="js/config.js"></script>
+    <script src="js/consts.js"></script>
+    <script src="js/mnemonic.js"></script>
+    <script src="js/util.bitcore.js"></script>  
+    
+    <script src="js/util.js"></script> 
+    <script src="js/util.api.js"></script>
+    <script src="js/util.bitcoin.js"></script>
+    <script src="js/util.knockout.js"></script>
+    <script src="js/counterwallet.js"></script>
+    <script src="js/counterblock.js"></script>
+
+    <script src="js/messagefeed.js"></script>
+    <script src="js/components/wallet.js"></script>
+    <script src="js/components/wallet_options.js"></script>
+    <script src="js/components/address.js"></script>
+    <script src="js/components/asset.js"></script>
+    <script src="js/components/logon.js"></script>
+    <script src="js/components/misc.js"></script>
+    <script src="js/components/feed_notifications.js"></script>
+    <script src="js/components/feed_pending_actions.js"></script>
+    <script src="js/components/feed_btcpays.js"></script>
+    <script src="js/components/chatfeed.js"></script>
+    
+    <script src="js/components/balances.js"></script>
+    <script src="js/components/balances_assets.js"></script>
+    <script src="js/components/exchange.js"></script>
+    <script src="js/components/history.js"></script>
+    <script src="js/components/leaderboard.js"></script>
+    <script src="js/components/portfolio.js"></script>
+    <script src="js/components/stats.js"></script>
+    <script src="js/components/betting.js"></script>
+    <script src="js/components/donate.js"></script>
+    <script src="js/components/rps.js"></script>
+
+    <script src="js/smartadmin.app.js"></script> <!-- custom app.js -->
+    <!-- ^ unfortunately we have to mod the file itself, instead of dynamically override o_O -->
+
+    <script src="js/pages.init.js"></script>
+    <!-- endbuild -->
+
+
+
+  </body>
+</html>

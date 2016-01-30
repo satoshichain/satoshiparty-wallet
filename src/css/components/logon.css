@@ -1,0 +1,335 @@
+/* 
+ * Logon page specific
+ */
+#logon {
+  padding-top: 120px;
+  background: white; 
+  width:      100%;
+  height:     100%;
+  overflow: auto;
+}
+
+.sales-title {
+  text-align: center;
+  margin: 0px;
+}
+
+#form-well {
+    max-width: 610px;
+    margin: 0 auto;
+    padding-bottom: 0px;
+}
+
+#password, #passwordDecrypt, #cryptedPassphrase {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+#form-well .btn-success {
+  width: 250px;
+}
+
+#walletLoginButton {
+  width: 100%;
+}
+
+#secureKeyboardButton {
+  width: 25%;
+}
+
+#extra-info {
+  background-color:#EEE;
+  border:1px solid #CCC;
+  margin-top: 80px;
+  padding-top: 20px;  
+}
+
+#newWalletButton {
+  font-size: 21px;
+}
+
+#createNewAcctBtnPane {
+  text-align:center;
+  display:block;
+  margin-bottom: 35px;
+}
+
+p.logonWarningLine1 {
+  font-weight:bold;
+  text-align:center;
+  font-size:1.3em;
+}
+
+p.logonWarningOtherLines {
+  font-weight:bold;
+  text-decoration:underline;
+  text-align:center;
+  font-size:1.15em;
+}
+
+#extra-info div.row {
+  margin-top:25px;
+  margin-bottom:20px;
+}
+
+.ui-keyboard-accept {
+  color: #3c763d !important;
+  background-color: #dff0d8 !important;
+  border-color: #d6e9c6 !important;
+}
+
+.ui-autocomplete {
+  z-index: 1400 !important;
+}
+
+#licenseAgreementText {
+  width: 95%;
+  margin: 0 auto;
+}
+
+/* disable animations for the login progress bar
+ * ..if we don't do this, the login progress bar won't work correctly, due to the animations taking
+ * time and no correctly playing 
+ */
+#loginProgressBar {
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
+}
+
+.shellparty {
+  background: #42b5d5 !important;
+  color: white;
+  font-family: "Open Sans", Arial, Helvetica, Sans-Serif;
+}
+
+.shellparty h1 {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.shellparty h2 {
+  font-size: 20px;
+}
+
+.shellparty h1,
+.shellparty h2 {
+  text-align: center;
+}
+
+.shellparty .form-well {
+  max-width: 440px !important;
+}
+
+.shellparty .btn-lg {
+  background: #42b5d5;
+  border: 1px solid white;
+  border-radius: 4px;
+  color: white;
+  box-shadow: none !important;
+  font-size: 22px
+  font-weight: bold;
+  margin-top: 60px;
+  padding: 30px 50px;
+}
+
+.shellparty #createNewAcctBtnPane {
+  margin-bottom: 0;
+}
+
+.shellparty .btn-lg:hover,
+.shellparty .btn-lg:focus {
+  left: 0;
+}
+
+.dp-logo {
+  display: block;
+  margin: 0 auto 70px;
+  height: 196px;
+  width: 196px;
+}
+
+.shellparty .testnet-note {
+  font-size: 18px;
+  line-height: 2em;
+  margin: 60px 0 0;
+  text-align: center;
+}
+
+.testnet-note a {
+  border-bottom: 1px solid #f9ec31;
+  color: #f9ec31;
+  font-weight: normal;
+  text-decoration: none;
+}
+
+.shellparty .panel-heading {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+.shellparty .panel-headline {
+  color: white;
+  display: block;
+  font-size: 18px;
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.shellparty .panel-info,
+.shellparty .panel-warning {
+  background: transparent;
+  border: 0;
+  margin-top: 60px;
+}
+
+.shellparty .panel-body {
+  background: #40aecd;
+  border: 1px solid #38a0bd;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.form-control {
+  height: auto;
+}
+
+.shellparty input[type="password"],
+#generated {
+  background: #f6f6f6;
+  border: 0;
+  border-radius: 4px !important;
+  margin: 0;
+  padding: 15px;
+  text-align: center;
+}
+
+#generated {
+  color: black;
+}
+
+.shellparty .btn-open,
+.shellparty .btn-regenerate {
+  background: #2f99b6 !important;
+  border: 0;
+  box-shadow: none !important;
+  color: white;
+  margin-top: 10px;
+  padding: 15px;
+}
+
+.shellparty .btn-regenerate {
+  width: 100%;
+}
+
+.shellparty .btn-primary-2 {
+  color: white;
+}
+
+.shellparty .alert-danger p {
+  font-size: 14px;
+  text-align: left;
+}
+
+.extra-info-box {
+  background: #ececec;
+  color: #58595b;
+  margin-top: 80px;
+}
+
+.shellparty .extra-info {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 40px 0 !important;
+}
+
+.shellparty .img-secure {
+  height: 138px;
+  width: 84px;
+}
+
+.shellparty .img-globe {
+  height: 118px;
+  width: 100px;
+}
+
+.shellparty .img-hand {
+  height: 135px;
+  width: 86px;
+}
+
+.shellparty .img-rocket {
+  display: block;
+  height: 155px;
+  margin: 0 auto 60px;
+  width: 155px;
+}
+
+.about-wallet h4 {
+  color: #2fb2e0;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.about-wallet {
+  font-size: 17px;
+}
+
+.about-wallet .row {
+  margin-top: 40px !important;
+}
+
+.about-wallet img {
+  position: relative;
+  top: 50px;
+}
+
+.shellparty .sales-title {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.shellparty .down-arrow-row {
+  height: 0;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  position: relative;
+  top: -65px;
+}
+
+.shellparty .down-arrow-circle {
+  background: #42b5d5;
+  border-radius: 50%;
+  height: 50px;
+  margin: 0 auto;
+  text-align: center;
+  width: 50px;
+}
+
+.shellparty .down-arrow {
+  height: 26px;
+  position: relative;
+  top: 12px;
+  width: 20px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+
+  .about-wallet {
+    text-align: center;
+  }
+
+  .about-wallet img {
+    margin-bottom: 20px;
+    top: 0;
+  }
+
+}
+

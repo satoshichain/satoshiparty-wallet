@@ -1,0 +1,23 @@
+{
+  "open": "{{",
+  "close": "}}",
+  "name": "Shellparty Wallet",
+  "xcp": "SHP",
+  "xcp_name": "Shellparty",
+  "btc": "SCH",
+  "btc_name": "Shellcoin",
+  "xcp_store_url": "",
+  "max_burn_per_address": 500,
+  "homepage": "http://shellparty.io",
+  "livenet": {
+    "burning": false
+  },
+  "testnet": {
+    "url": "http://testnet.wallet.shellparty.io/",
+    "faucet_url": "",
+    "burning": {
+      "start": 124678,
+      "end": 26280000
+    }
+  }
+}
